@@ -11,12 +11,9 @@ type Story = StoryObj<typeof ArrowButton>;
 
 export const ArrowButtonStory: Story = {
 	render: () => {
-		const onClick = () => {
-			console.log('Button clicked');
-		};
 		return (
 			<>
-				<ArrowButton onClick={onClick} />
+				<ArrowButton />
 			</>
 		);
 	},
