@@ -39,7 +39,7 @@ export const ArticleParamsForm = ({
 
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault(); // Предотвращаем стандартное действие отправки формы
-		handleChange(articleState); // Вызываем обработчик изменения параметров
+		handleChange(articleState); // Вызываем обработчик изменения параметро
 	};
 
 	const handleReset = () => {
