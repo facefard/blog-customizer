@@ -12,7 +12,7 @@ export const ArrowButton = ({ onClick }: { onClick: OnClick }) => {
 
 	const toggleOpen = () => {
 		setIsOpen(!isOpen);
-		onClick(); // Вызов функции onClick из родительского компонента.
+		onClick(); // Вызов функции onClick из родительского компонента..
 	};
 
 	useEffect(() => {
