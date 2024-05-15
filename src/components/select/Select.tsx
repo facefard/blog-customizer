@@ -63,6 +63,7 @@ export const Select = (props: SelectProps) => {
 				<img
 					src={arrowDown}
 					alt='иконка стрелочки'
+					onClick={handlePlaceHolderClick}
 					className={clsx(styles.arrow, { [styles.arrow_open]: isOpen })}
 				/>
 				<div
