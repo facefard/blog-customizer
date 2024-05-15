@@ -1,6 +1,6 @@
-import { OnClick, ArrowButton } from '../arrow-button/ArrowButton';
+import { ArrowButton } from '../arrow-button/ArrowButton';
 import { Button } from 'components/button';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { Select } from '../select';
 import {
 	fontFamilyOptions,
@@ -13,6 +13,8 @@ import {
 import { RadioGroup } from '../radio-group';
 import { Separator } from '../separator';
 import { Text } from '../text';
+import clsx from 'clsx';
+import { useClose } from '../hooks/useClose';
 
 import styles from './ArticleParamsForm.module.scss';
 
@@ -23,97 +25,91 @@ export const ArticleParamsForm = ({
 	defaultState: ArticleStateType;
 	onParamsChange: (updatedState: ArticleStateType) => void;
 }) => {
-	const [articleState, setArticleState] =
-		useState<ArticleStateType>(defaultState);
+	const [formState, setFormState] = useState<ArticleStateType>(defaultState);
 	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-	const formRef = useRef<HTMLDivElement>(null);
+	const formRef = useRef<HTMLElement>(null);
 
-	const toggleSidebar: OnClick = () => {
+	const toggleSidebar = () => {
 		setIsSidebarOpen(!isSidebarOpen);
 	};
 
 	const handleChange = (updatedState: ArticleStateType) => {
-		setArticleState(updatedState);
+		setFormState(updatedState);
 		onParamsChange(updatedState);
 	};
 
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-		event.preventDefault(); // Предотвращаем стандартное действие отправки формы
-		handleChange(articleState); // Вызываем обработчик изменения параметров
+		event.preventDefault();
+		handleChange(formState);
 	};
 
 	const handleReset = () => {
-		setArticleState(defaultState); // Устанавливаем значения по умолчанию
-		onParamsChange(defaultState); // Вызываем обработчик изменения параметров с дефолтными значениями
+		setFormState(defaultState);
+		onParamsChange(defaultState);
 	};
 
-	useEffect(() => {
-		const handleClickOutside = (event: MouseEvent) => {
-			if (formRef.current && !formRef.current.contains(event.target as Node)) {
-				setIsSidebarOpen(false);
-			}
-		};
-
-		document.addEventListener('mousedown', handleClickOutside);
-		return () => {
-			document.removeEventListener('mousedown', handleClickOutside);
-		};
-	}, []);
+	// Используем кастомный хук для навешивания и удаления обработчиков
+	useClose({
+		isOpen: isSidebarOpen,
+		onClose: () => setIsSidebarOpen(false),
+		rootRef: formRef,
+	});
 
 	return (
-		<div ref={formRef}>
-			<ArrowButton onClick={toggleSidebar} />
+		<div>
+			<ArrowButton onClick={toggleSidebar} isOpen={isSidebarOpen} />
 			<aside
-				className={`${styles.container} ${
-					isSidebarOpen ? styles.container_open : ''
-				}`}>
+				ref={formRef}
+				className={clsx(styles.container, {
+					[styles.container_open]: isSidebarOpen,
+				})}>
 				<form className={styles.form} onSubmit={handleSubmit}>
-					<Text as='h1' size={31} weight={800} uppercase dynamicLite>
+					<Text as='h1' size={31} weight={800} uppercase>
 						Задайте параметры
 					</Text>
 					<Select
-						selected={articleState.fontFamilyOption}
+						selected={formState.fontFamilyOption}
 						options={fontFamilyOptions}
 						placeholder='Выберите шрифт'
 						onChange={(value) =>
-							setArticleState({ ...articleState, fontFamilyOption: value })
+							setFormState({ ...formState, fontFamilyOption: value })
 						}
 						title='Шрифт'
 					/>
 					<RadioGroup
-						selected={articleState.fontSizeOption}
+						selected={formState.fontSizeOption}
 						options={fontSizeOptions}
 						name='font-size'
 						onChange={(value) =>
-							setArticleState({ ...articleState, fontSizeOption: value })
+							setFormState({ ...formState, fontSizeOption: value })
 						}
 						title='Размер шрифта'
 					/>
 					<Select
-						selected={articleState.fontColor}
+						selected={formState.fontColor}
 						options={fontColors}
 						placeholder='Выберите цвет'
 						onChange={(value) =>
-							setArticleState({ ...articleState, fontColor: value })
+							setFormState({ ...formState, fontColor: value })
 						}
 						title='Цвет шрифта'
 					/>
 					<Separator />
 					<Select
-						selected={articleState.backgroundColor}
+						selected={formState.backgroundColor}
 						options={backgroundColors}
 						placeholder='Выберите цвет'
 						onChange={(value) =>
-							setArticleState({ ...articleState, backgroundColor: value })
+							setFormState({ ...formState, backgroundColor: value })
 						}
 						title='Цвет фона'
 					/>
 					<Select
-						selected={articleState.contentWidth}
+						selected={formState.contentWidth}
 						options={contentWidthArr}
 						placeholder='Выберите ширину'
 						onChange={(value) =>
-							setArticleState({ ...articleState, contentWidth: value })
+							setFormState({ ...formState, contentWidth: value })
 						}
 						title='Ширина контента'
 					/>

@@ -31,7 +31,7 @@ const App = () => {
 					'--font-size': articleState.fontSizeOption.value,
 					'--font-color': articleState.fontColor.value,
 					'--container-width': articleState.contentWidth.value,
-					backgroundColor: articleState.backgroundColor.value,
+					'--bg-color': articleState.backgroundColor.value,
 				} as CSSProperties
 			}>
 			<ArticleParamsForm
